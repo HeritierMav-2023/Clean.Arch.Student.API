@@ -23,7 +23,7 @@ namespace Clean.Arch.Student.API.Controllers
         [HttpGet]
         public ActionResult<Domain.Entities.Student> GetStudentDetails()
         {
-            var data = _studentRepository.GetStudentDetails();
+            var data = _studentRepository.GetAll();
 
             if (data == null)
             {
@@ -36,10 +36,9 @@ namespace Clean.Arch.Student.API.Controllers
         }
 
         [HttpGet("{Id}")]
-        public async Task<ActionResult<Domain.Entities.Student>>GetById(int Id)
+        public async Task<ActionResult<Domain.Entities.Student>>GetData(int Id)
         {
-            //return  _studentRepository.GetStudentData(Id);
-            return await _studentRepository.GetByIdAsync(Id);
+            return await _studentRepository.GetbyId(Id);
 
         }
         [HttpPost]
@@ -49,22 +48,17 @@ namespace Clean.Arch.Student.API.Controllers
             {
                 return NotFound();
             }
-            return await _studentRepository.CreateAsync(student);
+            return await _studentRepository.Add(student);
         }
         [HttpPut]
         public async Task<ActionResult<int>> PutStudent(Domain.Entities.Student student)
         {
-            //if (student.Id == null || student.Id == 0)
-            //{
-            //    return 0;
-            //}
-            //return await _studentRepository.UpdateAsync(student);
             try
             {
                 if (student.Id == 0)
                     return 0;
                 else
-                    return await _studentRepository.UpdateAsync(student);
+                    return await _studentRepository.Update(student);
             }
             catch (Exception exp)
             {
@@ -75,10 +69,10 @@ namespace Clean.Arch.Student.API.Controllers
         [HttpDelete("DeleteStudent/{id}")]
         public  async Task<int> Delete(int id)
         { 
-            var entity = await _studentRepository.GetByIdAsync(id);
+            var entity = await _studentRepository.GetbyId(id);
             if (entity == null)
                 return 0;
-            return await _studentRepository.DeleteAsync(id);
+            return await _studentRepository.Delete(id);
         }
         #endregion
     }

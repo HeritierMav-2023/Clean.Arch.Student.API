@@ -13,24 +13,20 @@ GO
 
 --Creation Table-
 CREATE TABLE [dbo].[StudentDetails](
-	[Id] [int] NULL,
+	[StudentID] [int] NULL,
 	[Name] [nvarchar](100) NULL,
 	[Email] [nvarchar](100) NULL,
 	[Password] [nvarchar](max) NULL,
 	[DateofBirth] [date] NULL,
-	[DateofJoining] [date] NULL
+	[DateofJoining] [date] NULL,
+	[AddedOn]  [date] NULL,
+    [ModifiedOn] [date] NULL
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 
 GO
 
---Insertion data
-INSERT [dbo].[StudentDetails] ([Id], [Name], [Email], [Password], [DateofBirth], [DateofJoining]) VALUES (1, N'Amit Mohanty', N'amit-mohanty@test.com', N'amit123', CAST(N'1986-07-08' AS Date), CAST(N'2022-08-01' AS Date))
-GO
-INSERT [dbo].[StudentDetails] ([Id], [Name], [Email], [Password], [DateofBirth], [DateofJoining]) VALUES (2, N'Abinash Hota', N'abhinash.hota@test.com', N'test123', CAST(N'1972-05-13' AS Date), CAST(N'2010-05-10' AS Date))
-GO
-
 --Create Stord Proc
-CREATE PROCEDURE [dbo].[GetStudentDetails]
+CREATE PROCEDURE [dbo].[GetStudentsDetails]
 (
 	@Id INT = NULL,
 	@Name NVARCHAR(100) = NULL,
@@ -38,34 +34,38 @@ CREATE PROCEDURE [dbo].[GetStudentDetails]
 	@Password NVARCHAR(MAX) = NULL,
 	@DateofBirth DATE = NULL, 
 	@DateofJoining DATE = NULL,
+	@DateAdded DATE = NULL,
+	@DateModified DATE = NULL,
 	@Action NVARCHAR(20)
 )
 AS
 BEGIN
 	IF @Action = 'GetAll'
 	BEGIN
-		SELECT * FROM StudentDetails
+		SELECT * FROM [dbo].[StudentsDetails]
 	END
 
 	IF @Action = 'GetData'
 	BEGIN
-		SELECT * FROM StudentDetails WHERE id = @Id
+		SELECT * FROM [dbo].[StudentsDetails] WHERE [StudentID]= @Id
 	END
 
 	IF @Action = 'Post'
 	BEGIN
-		INSERT INTO StudentDetails VALUES (@Id, @Name, @Email, @Password, @DateofBirth, @DateofJoining)
+		INSERT INTO [dbo].[StudentsDetails] VALUES (@Name, @Email, @Password, @DateofBirth, @DateofJoining,@DateAdded,@DateModified)
 	END
 
 	IF @Action = 'Put'
 	BEGIN
-		UPDATE StudentDetails SET Name = @Name, Email = @Email, Password = @Password, DateofBirth = @DateofBirth, 
-		DateofJoining = @DateofJoining WHERE Id = @Id
+		UPDATE [dbo].[StudentsDetails] SET Name = @Name, Email = @Email, 
+		Password = @Password, DateofBirth = @DateofBirth, 
+		DateofJoining = @DateofJoining, AddedOn=@DateAdded, ModifiedOn=@DateModified 
+		WHERE [StudentID]= @Id
 	END
 
 	IF @Action = 'Delete'
 	BEGIN
-		DELETE FROM StudentDetails WHERE id = @Id
+		DELETE FROM StudentsDetails WHERE [StudentID] = @Id
 	END
 END
 GO
